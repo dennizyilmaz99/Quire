@@ -1,11 +1,11 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import Deletenotebutton from "./components/Deletenotebutton";
+import { StyleSheet, View, SafeAreaView } from "react-native";
+import NoteScreen from "./screens/NoteScreen";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Deletenotebutton></Deletenotebutton>
+      <NoteScreen style={{ flex: 1 }}></NoteScreen>
     </View>
   );
 }

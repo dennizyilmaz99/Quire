@@ -13,7 +13,7 @@ export default function Deletenotebutton() {
   };
 
   const handlePress = () => {
-    // Handle button press event
+    //DELETE NOTE ON PRESS HERE
     console.log("Button Pressed!");
   };
 
@@ -49,24 +49,19 @@ const ImageButton = ({ onPress, onPressIn, onPressOut, source, isHovered }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
   },
   button: {
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "white",
-    width: 50,
-    height: 50,
+    width: 35,
+    height: 35,
   },
   hoveredButton: {
     backgroundColor: "white",
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 35,
+    height: 35,
     // Add any other desired styles
   },
   hoveredImage: {
