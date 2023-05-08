@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import React, { useRef, useState, useEffect } from "react";
 import {
   View,
   TextInput,
-  Button,
   StyleSheet,
   Text,
   ScrollView,
@@ -10,10 +11,19 @@ import {
   Image,
   Keyboard,
 } from "react-native";
-import Deletenotebutton from "../components/Deletenotebutton";
 
 const NoteScreen = () => {
+  const [isHovered, setIsHovered] = React.useState(false);
   const noteInputRef = useRef(null);
+  const [noteText, setNoteText] = useState("");
+
+  const handlePressIn = () => {
+    setIsHovered(true);
+  };
+
+  const handlePressOut = () => {
+    setIsHovered(false);
+  };
 
   const handleDoneButton = () => {
     Keyboard.dismiss();
@@ -21,12 +31,42 @@ const NoteScreen = () => {
   };
 
   const handleDeleteButton = () => {
-    console.log("Delete button pressed");
+    setNoteText("");
+    console.log("Deleted");
   };
 
   const handlePress = () => {
     //DELETE NOTE ON PRESS HERE
+
     console.log("Button Pressed!");
+  };
+
+  const saveNoteText = async (text) => {
+    try {
+      await AsyncStorage.setItem("noteText", text);
+    } catch (error) {
+      console.error("Error saving note text:", error);
+    }
+  };
+
+  useEffect(() => {
+    const loadNoteText = async () => {
+      try {
+        const savedNoteText = await AsyncStorage.getItem("noteText");
+        if (savedNoteText !== null && savedNoteText !== "") {
+          updateNoteText(savedNoteText);
+        }
+      } catch (error) {
+        console.error("Error loading note text:", error);
+      }
+    };
+
+    loadNoteText();
+  }, []);
+
+  const updateNoteText = (text) => {
+    saveNoteText(text);
+    setNoteText(text);
   };
 
   return (
@@ -40,7 +80,13 @@ const NoteScreen = () => {
           <Text style={styles.title}>Note Title</Text>
         </View>
 
-        <Deletenotebutton style={{ marginRight: 16 }} />
+        <DeleteButton
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          onPress={handleDeleteButton}
+          source={require("../icons/trashicon.png")}
+          isHovered={isHovered}
+        />
       </View>
       <ScrollView
         contentContainerStyle={styles.scrollContentContainer}
@@ -53,8 +99,10 @@ const NoteScreen = () => {
               style={styles.noteInput}
               multiline
               placeholder="Enter your note here..."
-              autoFocus // Optional: Automatically focus on the input box when the screen loads
-              textAlignVertical="top" // Align the text to the top left
+              autoFocus
+              textAlignVertical="top"
+              value={noteText}
+              onChangeText={setNoteText}
             />
           </View>
         </View>
@@ -82,6 +130,29 @@ const DoneButton = ({ onPress, source }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
       <Image source={source} style={styles.image} />
+    </TouchableOpacity>
+  );
+};
+
+const DeleteButton = ({
+  onPress,
+  onPressIn,
+  onPressOut,
+  source,
+  isHovered,
+}) => {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      style={[styles.button, isHovered && styles.hoveredButton]}
+      activeOpacity={1} // Set activeOpacity to 1
+    >
+      <Image
+        source={source}
+        style={[styles.image, isHovered && styles.hoveredImage]}
+      />
     </TouchableOpacity>
   );
 };
@@ -155,6 +226,22 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     // Add any other desired styles
+  },
+  deletebutton: {
+    backgroundColor: "white",
+    width: 40,
+    height: 40,
+  },
+  hoveredButton: {
+    backgroundColor: "white",
+  },
+  deleteimage: {
+    width: 30,
+    height: 30,
+    // Add any other desired styles
+  },
+  hoveredImage: {
+    tintColor: "red",
   },
 });
 

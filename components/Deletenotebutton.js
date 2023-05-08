@@ -51,17 +51,17 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
   },
-  button: {
+  deletebutton: {
     backgroundColor: "white",
-    width: 35,
-    height: 35,
+    width: 40,
+    height: 40,
   },
   hoveredButton: {
     backgroundColor: "white",
   },
-  image: {
-    width: 35,
-    height: 35,
+  deleteimage: {
+    width: 30,
+    height: 30,
     // Add any other desired styles
   },
   hoveredImage: {
