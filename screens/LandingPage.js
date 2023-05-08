@@ -1,14 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {useNavigation } from '@react-navigation/native';
+
 
 export default function LandingPage() {
+    const navigation = useNavigation()
   return (
     <View style={styles.background}>
     <View style={styles.container}>
         <Text style={styles.myHeader}>Quire</Text>
         <Text style={styles.greetingUser}>Welcome</Text>
         <Text style={styles.infotText}>In this app you will be able to create notes, delete them, edit your text and set some cool textstyle!</Text>
-        <TouchableOpacity style={styles.buttonContinue}>
+        <TouchableOpacity style={styles.buttonContinue} onPress={() => navigation.navigate('HomeScreen')}>
             <Text style={styles.buttonText}>Continue</Text>
         </TouchableOpacity>
       <StatusBar style="auto" />

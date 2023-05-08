@@ -1,10 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import LandingPage from './Component/LandingPage';
+import { StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import LandingPage from './screens/LandingPage';
+import NoteScreen from './screens/NoteScreen';
+import HomeScreen from './screens/HomeScreen';
+const Stack = createStackNavigator();
+
+
+function NoteStackScreen() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="LandingPage" component={LandingPage} options={{headerShown: false}}/>
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}} />
+      <Stack.Screen name="NoteScreen" component={NoteScreen} options={{headerShown: false}} />
+    </Stack.Navigator>
+  );
+}
 
 export default function App() {
   return (
-    <LandingPage></LandingPage>
+    <NavigationContainer>
+      <NoteStackScreen />
+    </NavigationContainer>
   );
 }
 
