@@ -12,6 +12,8 @@ import { useNavigation } from "@react-navigation/native";
 export default function ModalComp({ visible, onClose }) {
   const navigation = useNavigation()
 
+//Coment
+
   return (
     <Modal
       animationType="slide"
