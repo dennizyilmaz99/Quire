@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Modal,
   StyleSheet,
@@ -5,47 +6,67 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-
 export default function ModalComp({ visible, onClose }) {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+  const [title, setTitle] = useState("");
+  
 
-//Coment
+ /*const handleAddNote = () => {
+    
+      navigation.navigate("NoteScreen")
+      onClose();
+    
+  }; */
+
+  const handleAddNote = () => {
+    navigation.navigate('NoteScreen', { title: title });
+    onClose();
+  }
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={visible}
       onRequestClose={() => {
         setModalVisible(!modalVisible);
       }}
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <View style={styles.topModalView}>
-            <Text style={styles.modalHeader}>Add Note Title</Text>
-            <TouchableOpacity onPress={onClose} style={{height: 20, width: 20}}>
-              <Text style={{ top: 5 }}>X</Text>
-            </TouchableOpacity>
-          </View>
-          <TextInput
-            style={styles.titleInput}
-            placeholder="Title"
-            keyboardType="default"
-          />
-          <TouchableOpacity
-            style={styles.modalAddNoteButton}
-            onPress={() => {navigation.navigate('NoteScreen');
-            onClose();
-          }}
-          >
-            <Text style={styles.modalAddText}>Add</Text>
-          </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.modalContainer}>
+          <TouchableWithoutFeedback onPress={() => {}}>
+            <View style={styles.modalContent}>
+              <View style={styles.topModalView}>
+                <Text style={styles.modalHeader}>Add Note Title</Text>
+                <TouchableOpacity
+                  onPress={onClose}
+                  style={{ height: 20, width: 20 }}
+                >
+                  <Text style={{ top: 5 }}>X</Text>
+                </TouchableOpacity>
+              </View>
+              <TextInput
+                style={styles.titleInput}
+                placeholder="Title"
+                keyboardType="default"
+                onChangeText={(text) => setTitle(text)}
+              />
+              <TouchableOpacity
+                style={styles.modalAddNoteButton}
+                onPress={handleAddNote}
+              >
+                <Text style={styles.modalAddText}>Add</Text>
+              </TouchableOpacity>
+              
+            </View>
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 }
@@ -55,7 +76,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    margin: 30,
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
 
   modalHeader: {
@@ -64,7 +85,7 @@ const styles = StyleSheet.create({
   },
 
   modalContent: {
-    width: "80%",
+    width: "70%",
     height: "23%",
     backgroundColor: "white",
     padding: 20,
@@ -80,7 +101,7 @@ const styles = StyleSheet.create({
   },
 
   titleInput: {
-    top: 15,
+    top: 23,
     height: 35,
     margin: 12,
     borderWidth: 1,
@@ -91,6 +112,7 @@ const styles = StyleSheet.create({
   },
 
   topModalView: {
+    top: 10,
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -102,7 +124,7 @@ const styles = StyleSheet.create({
     width: 100,
     backgroundColor: "#79A8D3",
     alignSelf: "center",
-    top: 30,
+    top: 45,
     borderRadius: 5,
   },
 

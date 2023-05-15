@@ -1,7 +1,7 @@
-import { useNavigation } from '@react-navigation/native';
-
+import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useRef, useState, useEffect } from "react";
+import { useRoute } from "@react-navigation/native";
 import {
   View,
   TextInput,
@@ -11,9 +11,11 @@ import {
   TouchableOpacity,
   Image,
   Keyboard,
+  SafeAreaView,
 } from "react-native";
 
-const NoteScreen = () => {
+const NoteScreen = ({ route }) => {
+  const [titleText, setTitleText] = useState(route.params.title || 'Note Title');
   const navigation = useNavigation();
   const [isHovered, setIsHovered] = React.useState(false);
   const noteInputRef = useRef(null);
@@ -34,13 +36,10 @@ const NoteScreen = () => {
 
   const handleDeleteButton = () => {
     setNoteText("");
-    console.log("Deleted");
   };
 
   const handlePress = () => {
-    //DELETE NOTE ON PRESS HERE
-    navigation.goBack()
-    console.log("Button Pressed!");
+    navigation.goBack();
   };
 
   const saveNoteText = async (text) => {
@@ -56,7 +55,7 @@ const NoteScreen = () => {
       try {
         const savedNoteText = await AsyncStorage.getItem("noteText");
         if (savedNoteText !== null && savedNoteText !== "") {
-          updateNoteText(savedNoteText);
+          setNoteText(savedNoteText);
         }
       } catch (error) {
         console.error("Error loading note text:", error);
@@ -66,20 +65,19 @@ const NoteScreen = () => {
     loadNoteText();
   }, []);
 
-  const updateNoteText = (text) => {
-    saveNoteText(text);
-    setNoteText(text);
-  };
+  useEffect(() => {
+    saveNoteText(noteText);
+  }, [noteText]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <ReturnButton
           onPress={handlePress}
           source={require("../icons/gobackicon.png")}
         />
         <View style={{ flex: 1 }}>
-          <Text style={styles.title}>Note Title</Text>
+          <Text style={styles.title}>{titleText}</Text>
         </View>
 
         <DeleteButton
@@ -116,10 +114,9 @@ const NoteScreen = () => {
           onPress={handleDoneButton}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
-
 const ReturnButton = ({ onPress, source }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
@@ -149,7 +146,7 @@ const DeleteButton = ({
       onPressIn={onPressIn}
       onPressOut={onPressOut}
       style={[styles.button, isHovered && styles.hoveredButton]}
-      activeOpacity={1} // Set activeOpacity to 1
+      activeOpacity={1}
     >
       <Image
         source={source}
@@ -174,14 +171,13 @@ const styles = StyleSheet.create({
     height: 40,
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
   },
   deletenote: {
     marginRight: 10,
   },
-
   scrollContentContainer: {
     flexGrow: 1,
   },
@@ -212,35 +208,25 @@ const styles = StyleSheet.create({
   doneButtonContainer: {
     position: "absolute",
     bottom: 16,
-    right: 16,
+    right: 20,
   },
   button: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
-    width: 30,
-    height: 30,
-  },
-  hoveredButton: {
-    backgroundColor: "white",
+    width: 40,
+    height: 40,
   },
   image: {
     width: 30,
     height: 30,
-    // Add any other desired styles
   },
   deletebutton: {
-    backgroundColor: "white",
     width: 40,
     height: 40,
   },
-  hoveredButton: {
-    backgroundColor: "white",
-  },
   deleteimage: {
-    width: 30,
-    height: 30,
-    // Add any other desired styles
+    width: 50,
+    height: 50,
   },
   hoveredImage: {
     tintColor: "red",
