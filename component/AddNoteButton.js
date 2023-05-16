@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import ModalComp from "./ModalComp";
+import { ErrorContext } from "./ErrorContext";
 
 export default function AddNoteButton() {
   const [modalVisible, setModalVisible] = useState(false);
+  const {error, setError} = useContext(ErrorContext)
 
   const openModal = () => {
     setModalVisible(true);
@@ -11,6 +13,8 @@ export default function AddNoteButton() {
 
   const closeModal = () => {
     setModalVisible(false);
+    setError(false)
+
   };
 
   return (

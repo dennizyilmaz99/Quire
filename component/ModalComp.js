@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Modal,
   StyleSheet,
@@ -7,25 +7,24 @@ import {
   TouchableOpacity,
   View,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { ErrorContext } from "./ErrorContext";
 
-export default function ModalComp({ visible, onClose }) {
+export default function ModalComp({ visible, onClose}) {
   const navigation = useNavigation();
   const [title, setTitle] = useState("");
-  
-
- /*const handleAddNote = () => {
-    
-      navigation.navigate("NoteScreen")
-      onClose();
-    
-  }; */
+  const {error, setError} = useContext(ErrorContext)
 
   const handleAddNote = () => {
-    navigation.navigate('NoteScreen', { title: title });
+    if (title) {
+      setError(false);
+      navigation.navigate('NoteScreen', { title });
     onClose();
+    setTitle("");
+    } else {
+      setError(true)
+    }
   }
 
   return (
@@ -51,10 +50,11 @@ export default function ModalComp({ visible, onClose }) {
                 </TouchableOpacity>
               </View>
               <TextInput
-                style={styles.titleInput}
+                style={[styles.titleInput, error && styles.errorInput]}
                 placeholder="Title"
                 keyboardType="default"
-                onChangeText={(text) => setTitle(text)}
+                value={title}
+                onChangeText={setTitle}
               />
               <TouchableOpacity
                 style={styles.modalAddNoteButton}
@@ -62,7 +62,6 @@ export default function ModalComp({ visible, onClose }) {
               >
                 <Text style={styles.modalAddText}>Add</Text>
               </TouchableOpacity>
-              
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -133,4 +132,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
+
+  errorInput: {
+    top: 23,
+    height: 35,
+    margin: 12,
+    borderWidth: 1,
+    padding: 9,
+    borderRadius: 5,
+    backgroundColor: "white",
+    borderColor: "red",
+  }
 });

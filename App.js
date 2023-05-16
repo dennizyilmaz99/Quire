@@ -4,6 +4,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LandingPage from './screens/LandingPage';
 import NoteScreen from './screens/NoteScreen';
 import HomeScreen from './screens/HomeScreen';
+import { ErrorContext } from './component/ErrorContext';
+import { useState } from 'react';
 const Stack = createStackNavigator();
 
 
@@ -18,10 +20,15 @@ function NoteStackScreen() {
 }
 
 export default function App() {
+
+  const [error, setError] = useState(false)
+
   return (
+    <ErrorContext.Provider value={{error, setError}}>
     <NavigationContainer>
       <NoteStackScreen />
     </NavigationContainer>
+    </ErrorContext.Provider>
   );
 }
 
