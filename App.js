@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LandingPage from './screens/LandingPage';
 import NoteScreen from './screens/NoteScreen';
 import HomeScreen from './screens/HomeScreen';
+import AddNoteScreen from './screens/AddNoteScreen';
 import { ErrorContext } from './component/ErrorContext';
 import { useState } from 'react';
 const Stack = createStackNavigator();
@@ -14,7 +15,12 @@ function NoteStackScreen() {
     <Stack.Navigator>
       <Stack.Screen name="LandingPage" component={LandingPage} options={{headerShown: false}}/>
       <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}} />
-      <Stack.Screen name="NoteScreen" component={NoteScreen} options={{headerShown: false}} />
+      <Stack.Screen name="NoteScreen" component={NoteScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="AddNote"
+        component={AddNoteScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }

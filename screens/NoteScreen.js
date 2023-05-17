@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useRef, useState, useEffect } from "react";
-import { useRoute } from "@react-navigation/native";
+
 import {
   View,
   TextInput,
@@ -12,10 +12,41 @@ import {
   Image,
   Keyboard,
   SafeAreaView,
+  KeyboardAvoidingView
 } from "react-native";
+import Toolbar from "../component/Toolbar";
 
 const NoteScreen = ({ route }) => {
-  const [titleText, setTitleText] = useState(route.params.title || 'Note Title');
+  const { note } = route.params;
+  const [text, setText] = useState("");
+  const [titleText, setTitleText] = useState(note.title || "Note Title");
+
+  useEffect(() => {
+    if (note && note.title) {
+      fetchNoteText();
+    }
+  }, [note]);
+
+  const fetchNoteText = async () => {
+    try {
+      const storedText = await AsyncStorage.getItem(`@note_${note.title}`);
+      if (storedText !== null) {
+        setText(storedText);
+      }
+    } catch (error) {
+      console.log("Error fetching note text:", error);
+    }
+  };
+
+  const saveNote = async () => {
+    try {
+      await AsyncStorage.setItem(`@note_${note.title}`, text);
+      navigation.navigate("Home", { note });
+    } catch (error) {
+      console.log("Error saving note:", error);
+    }
+  };
+
   const navigation = useNavigation();
   const [isHovered, setIsHovered] = React.useState(false);
   const noteInputRef = useRef(null);
@@ -29,18 +60,17 @@ const NoteScreen = ({ route }) => {
     setIsHovered(false);
   };
 
-  const handleDoneButton = () => {
-    Keyboard.dismiss();
-    noteInputRef.current.blur();
-  };
+
 
   const handleDeleteButton = () => {
     setNoteText("");
   };
 
-  const handlePress = () => {
+  const handlePress = async () => {
+    await saveNote();
     navigation.goBack();
   };
+
 
   const saveNoteText = async (text) => {
     try {
@@ -74,6 +104,7 @@ const NoteScreen = ({ route }) => {
       <View style={styles.header}>
         <ReturnButton
           onPress={handlePress}
+        
           source={require("../icons/gobackicon.png")}
         />
         <View style={{ flex: 1 }}>
@@ -95,25 +126,20 @@ const NoteScreen = ({ route }) => {
         <View style={styles.inputContainer}>
           <View style={styles.noteInputWrapper}>
             <TextInput
-              ref={noteInputRef}
               style={styles.noteInput}
-              multiline
-              placeholder="Enter your note here..."
-              autoFocus
-              textAlignVertical="top"
-              value={noteText}
-              onChangeText={setNoteText}
+              multiline={true}
+              value={text}
+              onChangeText={setText}
             />
           </View>
         </View>
       </ScrollView>
+      
+     <Toolbar></Toolbar>
 
-      <View style={styles.doneButtonContainer}>
-        <DoneButton
-          source={require("../icons/doneicon.png")}
-          onPress={handleDoneButton}
-        />
-      </View>
+      <KeyboardAvoidingView style={styles.doneButtonContainer}>
+    
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -125,13 +151,7 @@ const ReturnButton = ({ onPress, source }) => {
   );
 };
 
-const DoneButton = ({ onPress, source }) => {
-  return (
-    <TouchableOpacity onPress={onPress} style={styles.button}>
-      <Image source={source} style={styles.image} />
-    </TouchableOpacity>
-  );
-};
+
 
 const DeleteButton = ({
   onPress,
