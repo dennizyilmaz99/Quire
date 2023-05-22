@@ -4,7 +4,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Button,
   FlatList,
   TextInput,
   Modal,
