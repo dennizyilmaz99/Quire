@@ -28,6 +28,7 @@ export default function HomeScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const height = useHeaderHeight();
   const { error, setError } = useContext(ErrorContext);
+  const [isEmpty, setIsEmpty] = useState(true);
 
   useEffect(() => {
     fetchNotes();
@@ -56,6 +57,7 @@ export default function HomeScreen({ navigation }) {
       return;
     } else {
       handleResetBox();
+      setIsEmpty(false);
     }
 
     if (notes.some((note) => note.title === newNoteTitle)) {
@@ -76,6 +78,9 @@ export default function HomeScreen({ navigation }) {
     const updatedNotes = notes.filter((n) => n.title !== note.title);
     await AsyncStorage.setItem("@notes", JSON.stringify(updatedNotes));
     setNotes(updatedNotes);
+    if (updatedNotes.length === 0) {
+      setIsEmpty(true);
+    }
   };
 
   const DeleteAlert = (note) => {
@@ -96,10 +101,10 @@ export default function HomeScreen({ navigation }) {
     setError(false);
   };
 
-  const [isToggled, setIsToggled] = useState(false);
   const renderNoteItem = ({ item }) => {
-    const handleToggle = () => {
-      setIsToggled(!isToggled);
+    const handleToggle = (note) => {
+      note.isToggled = !note.isToggled;
+      setNotes([...notes]);
     };
 
     const handleLongPress = () => {
@@ -148,7 +153,7 @@ export default function HomeScreen({ navigation }) {
               right: 70,
               justifyContent: "center",
             }}
-            onPress={() => deleteNote(item)}
+            onPress={() => DeleteAlert(item)}
           >
             <Text
               style={{ fontWeight: "bold", color: "red", alignSelf: "center" }}
@@ -176,7 +181,7 @@ export default function HomeScreen({ navigation }) {
               width: 60,
               borderRadius: 10,
             }}
-            onPress={handleToggle}
+            onPress={() => handleToggle(item)}
           >
             <Image
               style={{
@@ -185,7 +190,7 @@ export default function HomeScreen({ navigation }) {
                 alignSelf: "center",
                 top: 17,
                 right: 1,
-                tintColor: isToggled ? "red" : "black",
+                tintColor: item.isToggled ? "red" : "black",
               }}
               source={require("../icons/heart.png")}
             />
@@ -248,13 +253,20 @@ export default function HomeScreen({ navigation }) {
               </View>
             </TouchableWithoutFeedback>
           </Modal>
-          <FlatList
-            data={notes}
-            renderItem={renderNoteItem}
-            keyExtractor={(item, index) => `${item.title}-${index}`}
-            style={{ height: 500 }}
-            showsVerticalScrollIndicator={false}
-          />
+          {isEmpty ? (
+            <Image
+              style={{ height: 300, width: 300, top: 200, right: 20 }}
+              source={require("../icons/add_note_here.png")}
+            />
+          ) : (
+            <FlatList
+              data={notes}
+              renderItem={renderNoteItem}
+              keyExtractor={(item, index) => `${item.title}-${index}`}
+              style={{ height: 500 }}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
         </SafeAreaView>
         <TouchableOpacity
           style={styles.addNoteButton}
