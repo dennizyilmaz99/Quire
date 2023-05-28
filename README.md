@@ -8,4 +8,4 @@ Made with React Native, we reach everyone no matter operating system or mobile d
 
 <img src="https://github.com/dennizyilmaz99/Quire/assets/32544623/501f28c5-b225-4c20-934b-089b673ae41e" align="left" height="600" width="280"></img>
 
-<img src="https://github.com/dennizyilmaz99/Quire/assets/32544623/637a268b-6622-4a52-9121-dd902c182243" align="left" height="600" width="280"></img>
+<img src="https://github.com/dennizyilmaz99/Quire/assets/32544623/637a268b-6622-4a52-9121-dd902c182243" align="left" height="600" width="280" border-radius="10"></img>
